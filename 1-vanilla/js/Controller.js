@@ -32,7 +32,9 @@ export default class Controller {
       .on("@reset", () => this.reset());
     this.tabView.on("@change", (e) => this.tabChange(e.detail.value));
     this.keywordListView.on("@change", (e) => this.search(e.detail.value));
-    this.historyListView.on("@change", (e) => this.search(e.detail.value));
+    this.historyListView
+      .on("@change", (e) => this.search(e.detail.value))
+      .on("@remove", (e) => this.remove(e.detail.value));
   }
 
   tabChange(tabType) {
@@ -42,6 +44,12 @@ export default class Controller {
 
   search(keyword) {
     this.store.search(keyword);
+    this.render();
+  }
+
+  remove(keyword) {
+    console.log("df");
+    this.store.removeHistory(keyword);
     this.render();
   }
 
