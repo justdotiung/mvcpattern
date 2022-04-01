@@ -1,20 +1,17 @@
 import { createNextId } from "./helpers.js";
-import { TabType } from "./views/TabView.js";
+import storage from "./storage.js";
+// import { TabType } from "./views/TabView.js";
 
 const tag = "[store]";
 
-export default class Store {
+class Store {
   constructor(storage) {
     if (!storage) throw "no storage";
     this.storage = storage;
-    this.searchKeyword = "";
-    this.searchResult = [];
-    this.selectedTab = TabType.KEYWORD;
   }
 
   search(keyword) {
-    this.searchKeyword = keyword;
-    this.searchResult = this.storage.productData.filter((data) =>
+    return this.storage.productData.filter((data) =>
       data.name.includes(keyword)
     );
 
@@ -50,3 +47,5 @@ export default class Store {
     this.storage.historyData.push({ id, keyword, date });
   }
 }
+
+export default new Store(storage);
