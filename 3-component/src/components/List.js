@@ -7,11 +7,10 @@ export default class List extends React.Component {
   }
 
   renderItem(data, index) {
-    throw "리스트를 구현해주세요.";
+    throw "renderItem()를 구현하세요";
   }
 
   render() {
-    console.log(this.state.data);
     return (
       <ul className="list">
         {this.state.data.map((data, index) => (

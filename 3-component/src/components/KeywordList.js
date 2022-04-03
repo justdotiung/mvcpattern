@@ -9,7 +9,6 @@ export default class KeywordList extends List {
   }
 
   renderItem(data, i) {
-    console.log(data);
     return (
       <>
         <span className="number">{i + 1}</span>

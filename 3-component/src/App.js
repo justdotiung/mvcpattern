@@ -23,13 +23,11 @@ export default class App extends React.Component {
     this.search(this.state.searchKeyword);
   }
 
-  search(keyword = "") {
-    const searchResult = store.search(
-      keyword.length <= 0 ? this.state.searchKeyword : keyword
-    );
+  search(searchKeyword = "") {
+    const searchResult = store.search(searchKeyword);
     this.setState({
       searchResult,
-
+      searchKeyword,
       submitted: true,
     });
   }
@@ -76,7 +74,6 @@ export default class App extends React.Component {
                 {selectedTab === TabType.KEYWORD && (
                   <KeywordList
                     onClick={(keyword) => {
-                      console.log(keyword);
                       this.search(keyword);
                     }}
                   />
