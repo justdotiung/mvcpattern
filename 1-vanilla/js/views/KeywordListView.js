@@ -18,6 +18,7 @@ export default class KeywordListView extends View {
   }
 
   bindEvents() {
+    console.log("key");
     delegate(this.element, "click", "li", (e) => this.handleClick(e));
   }
 

@@ -1,3 +1,4 @@
+import { formatRelativeDate } from "./js/helpers.js";
 import store from "./js/Store.js";
 
 const TabType = {
@@ -19,7 +20,15 @@ class App extends React.Component {
       searchResult: [],
       submitted: false,
       selectedTab: TabType.KEYWORD,
+      keywordList: [],
+      historyList: [],
     };
+  }
+
+  componentDidMount() {
+    const keywordList = store.getKeywordList();
+    const historyList = store.getHistoryList();
+    this.setState({ keywordList, historyList });
   }
 
   handleChangeInput(e) {
@@ -34,15 +43,19 @@ class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const searchResult = this.search(this.state.searchKeyword);
-    this.setState({
-      searchResult,
-      submitted: true,
-    });
+    this.search(this.state.searchKeyword);
   }
 
-  search(keyword) {
-    return store.search(keyword);
+  search(searchKeyword) {
+    const searchResult = store.search(searchKeyword);
+    const historyList = store.getHistoryList();
+
+    this.setState({
+      searchKeyword,
+      searchResult,
+      historyList,
+      submitted: true,
+    });
   }
 
   handleResetButton(e) {
@@ -59,18 +72,23 @@ class App extends React.Component {
         searchResult: [],
         submitted: false,
       }),
-      () => {
-        console.log(this.state.searchKeyword);
-      }
+      () => {}
     );
   }
 
-  handleChangeTab(e) {
-    // e.target.classList.add("active");
-    // Array.from(e.target.childNode).forEach((node) => {
-    //   node.classList.add("active");
-    //   console.log(node);
-    // });
+  handleHistoryResetButton(e, historyKeyword) {
+    e.stopPropagation();
+    const historyList = store.removeHistory(historyKeyword);
+
+    this.setState({ historyList });
+  }
+
+  keywordList() {
+    return store.getKeywordList();
+  }
+
+  historyList() {
+    return store.getHistoryList();
   }
 
   render() {
@@ -113,6 +131,40 @@ class App extends React.Component {
       </div>
     );
 
+    const keywordList = (
+      <ul className="list">
+        {this.state.keywordList.map((data, i) => (
+          <li key={data.id} onClick={(e) => this.search(data.keyword)}>
+            <span className="number">{i + 1}</span>
+            <span>{data.keyword}</span>
+          </li>
+        ))}
+      </ul>
+    );
+
+    const historyList = (
+      <ul className="list">
+        {this.state.historyList.map((data, i) => (
+          <li
+            key={data.id}
+            onClick={(e) => {
+              this.search(data.keyword);
+            }}
+          >
+            <span className="number">{i + 1}</span>
+            <span>{data.keyword}</span>
+            <span className="date">{formatRelativeDate(data.date)}</span>
+            <button
+              className="btn-remove"
+              onClick={(e) => {
+                this.handleHistoryResetButton(e, data.keyword);
+              }}
+            ></button>
+          </li>
+        ))}
+      </ul>
+    );
+
     const tabs = (
       <>
         <ul className="tabs">
@@ -126,8 +178,8 @@ class App extends React.Component {
             </li>
           ))}
         </ul>
-        {this.state.selectedTab === TabType.KEYWORD && <>cncjs</>}
-        {this.state.selectedTab === TabType.HISTORY && <>cnfscjs</>}
+        {this.state.selectedTab === TabType.KEYWORD && keywordList}
+        {this.state.selectedTab === TabType.HISTORY && historyList}
       </>
     );
 

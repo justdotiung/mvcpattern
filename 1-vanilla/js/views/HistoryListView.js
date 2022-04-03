@@ -12,7 +12,7 @@ export default class HistoryListView extends KeywordListView {
         this.handleClickRemoveButton(e);
       });
     });
-
+    console.log("his");
     super.bindEvents();
   }
 

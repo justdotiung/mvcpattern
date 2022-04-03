@@ -1,29 +1,30 @@
 import { createNextId } from "./helpers.js";
-import storage from "./storage.js";
-// import { TabType } from "./views/TabView.js";
+import { TabType } from "./views/TabView.js";
 
 const tag = "[store]";
 
-class Store {
+export default class Store {
   constructor(storage) {
     if (!storage) throw "no storage";
     this.storage = storage;
+    this.searchKeyword = "";
+    this.searchResult = [];
+    this.selectedTab = TabType.KEYWORD;
   }
 
   search(keyword) {
-    this.addHistory(keyword);
-
-    return this.storage.productData.filter((data) =>
+    this.searchKeyword = keyword;
+    this.searchResult = this.storage.productData.filter((data) =>
       data.name.includes(keyword)
     );
+
+    this.addHistory(keyword);
   }
 
   removeHistory(removeKeyword) {
     this.storage.historyData = this.storage.historyData.filter(
       ({ keyword }) => keyword !== removeKeyword
     );
-
-    return this.storage.historyData;
   }
 
   getKeywordList() {
@@ -38,12 +39,7 @@ class Store {
     return h2.date - h1.date;
   }
 
-  addHistory(keyword = "") {
-    keyword = keyword.trim();
-    if (keyword.length <= 0) {
-      return;
-    }
-
+  addHistory(keyword) {
     const exist = this.storage.historyData.some(
       (history) => history.keyword === keyword
     );
@@ -54,5 +50,3 @@ class Store {
     this.storage.historyData.push({ id, keyword, date });
   }
 }
-
-export default new Store(storage);
