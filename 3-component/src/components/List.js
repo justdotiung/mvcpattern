@@ -1,29 +1,44 @@
 import React from "react";
+import { formatRelativeDate } from "../helpers.js";
 
-export default class List extends React.Component {
-  constructor() {
-    super();
-    this.state = { data: [] };
-  }
+const List = ({
+  data,
+  onClick,
+  hasIndex = false,
+  hasDate = false,
+  onRemove,
+}) => {
+  const handleHistoryReset = (e, keyword) => {
+    e.stopPropagation();
+    onRemove(keyword);
+  };
 
-  renderItem(data, index) {
-    throw "renderItem()를 구현하세요";
-  }
+  return (
+    <ul className="list">
+      {data.map((data, i) => (
+        <li
+          key={data.id}
+          onClick={() => {
+            onClick(data.keyword);
+          }}
+        >
+          {hasIndex && <span className="number">{i + 1}</span>}
+          <span>{data.keyword}</span>
+          {hasDate && (
+            <span className="date">{formatRelativeDate(data.date)}</span>
+          )}
+          {!!onRemove && (
+            <button
+              className="btn-remove"
+              onClick={(e) => {
+                handleHistoryReset(e, data.keyword);
+              }}
+            ></button>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+};
 
-  render() {
-    return (
-      <ul className="list">
-        {this.state.data.map((data, index) => (
-          <li
-            key={data.id}
-            onClick={() => {
-              this.props.onClick(data.keyword);
-            }}
-          >
-            {this.renderItem(data, index)}
-          </li>
-        ))}
-      </ul>
-    );
-  }
-}
+export default List;
